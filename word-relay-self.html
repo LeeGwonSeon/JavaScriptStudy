@@ -1,0 +1,64 @@
+<html lang="kr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>끝말잇기</title>
+  </head>
+  <body>
+    <div><span id="order">1</span>번째 참가자</div>
+    <div>제시어: <span id="word"></span></div>
+    <input type="text" />
+    <button class="target">입력</button>
+    <script>
+      // 첫번째에서는 string 값을 Int 값으로 변경해주는 parseInt로 감싸주고,
+      // 두 번째는 몇 진수인지 설정함(기본적으로 10진수로 자동설정 됨)
+      // 몇 명이 참여할지 선택한다.
+      // 참가자 순서를 정한다.
+      // 대기
+      const number = parseInt(prompt("몇 명이 참가하나요?"), 10);
+
+      if (number) {
+        // 첫 번째 사람이 제시어를 말한다.(말하기 전까지 대기 상태 필요)
+        // 첫 번째 사람인가??
+        // 필요한 것 입력란과 클릭 버튼
+        const $button = document.querySelector("button");
+        const $input = document.querySelector("input");
+        const $word = document.querySelector("#word");
+        const $order = document.querySelector("#order");
+        let word; // 제시어
+        let newWord; // 새로 입력한 단어
+
+        const onClickButton = () => {
+          if (
+            !word ||
+            (word[word.length - 1] === newWord[0] && newWord.length === 3)
+          ) {
+            //제시어가 비어 있는가?
+            // 비어 있다.
+            word = newWord; // 입력한 단어가 제시어가 된다.
+            $word.textContent = word; // 제시어를 화면에 표시해야한다.
+            const order = Number($order.textContent); // 현재 순서
+            if (order + 1 > number) {
+              $order.textContent = 1;
+            } else {
+              $order.textContent = order + 1;
+            }
+          } else {
+            // 올바르지 않은가
+            alert("올바르지 않은 단어입니다!");
+          }
+          $input.value = ""; // 화면에 표시한 후 입력란을 비워주는 센스
+          $input.focus(); // 입력창을 비우고 커서를 둔다.
+        };
+      }
+      const onInput = (e) => {
+        // 입력한 단어를 저장한다.
+        newWord = e.target.value;
+      };
+
+      $button.addEventListener("click", onClickButton);
+      $input.addEventListener("input", onInput);
+    </script>
+  </body>
+</html>
