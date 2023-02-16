@@ -26,8 +26,51 @@
       const $scissors = document.querySelector("#scissors");
       const $paper = document.querySelector("#paper");
       const IMG_URL = "./rsp.png";
-      $computer.style.background = `url(${IMG_URL}) 0 0`;
+      $computer.style.background = `url(${IMG_URL}) -464px 0`;
       $computer.style.backgroundSize = "auto 200px";
+
+      const rspX = {
+        scissors: "0", // 가위
+        rock: "-220px", // 바위
+        paper: "-440px", // 보
+      };
+
+      let computerChoice = "scissors";
+      const changeComputerHand = () => {
+        if (computerChoice === "scissors") {
+          // 가위면
+          computerChoice = "rock";
+        } else if (computerChoice === "rock") {
+          // 바위면
+          computerChoice = "paper";
+        } else if (computerChoice === "paper") {
+          // 보면
+          computerChoice = "scissors";
+        }
+        $computer.style.background = `url(${IMG_URL}) ${rspX[computerChoice]} 0`;
+        $computer.style.backgroundSize = "auto 200px";
+      };
+      let intervalId = setInterval(changeComputerHand, 50);
+
+      // clickButton 5번 호출, 인터벌 1번, 2번, 3번, 4번, 5번(얘만 intervalId)
+      // 그 다음에 버튼을 클릭하면 5번만 취소
+
+      // flag 변수
+      let clickable = true;
+      const clickButton = () => {
+        if (clickable) {
+          clearInterval(intervalId);
+          clickable = false;
+          // 점수 계산 및 화면 표시
+          setTimeout(() => {
+            clickable = true;
+            intervalId = setInterval(changeComputerHand, 50);
+          }, 1000);
+        }
+      };
+      $rock.addEventListener("click", clickButton);
+      $scissors.addEventListener("click", clickButton);
+      $paper.addEventListener("click", clickButton);
     </script>
   </body>
 </html>
