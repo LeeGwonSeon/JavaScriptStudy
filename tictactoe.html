@@ -27,6 +27,19 @@
       const $result = document.createElement("div");
       const rows = [];
       let turn = "O";
+
+      const callback = (e) => {
+        if (e.target.textContent !== "") {
+          // 칸이 이미 채워져 있는가?
+          console.log("빈 칸이 아닙니다.");
+          return;
+        }
+        // 빈칸이면
+        console.log("빈 칸 입니다");
+        e.target.textContent = turn;
+        // 승부 확인
+        turn = turn === "O" ? "X" : "O";
+      };
       // html로 테이블을 적지 않아도 javascript로 선언할 수 있는 방법
       for (let i = 0; i < 3; i++) {
         const $tr = document.createElement("tr");
@@ -34,16 +47,7 @@
         for (let j = 0; j < 3; j++) {
           const $td = document.createElement("td");
           cells.push($td);
-          $td.addEventListener("click", (e) => {
-            // 칸에 글자가 있나?
-            if (event.target.textContent) return;
-
-            e.target.textContent = turn;
-            // 승부 확인
-            if (turn === "O") {
-              turn = "X";
-            } else if (turn === "X") turn = "O";
-          });
+          $td.addEventListener("click", callback);
           $tr.append($td);
         }
         rows.push(cells);
