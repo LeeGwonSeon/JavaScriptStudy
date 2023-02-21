@@ -19,18 +19,21 @@
   </head>
   <body>
     <script>
-      let turn = "O";
-      const data = [];
-      // 배열 안에 배열이 있어서 2차원 배열이라고 부른다.
-      for (let i = 0; i < 3; i++) {
-        data.push([]);
-      }
-      // html로 테이블을 적지 않아도 javascript로 선언할 수 있는 방법
+      // 최신 문법 => 구조 분해 할당
+      // const [one, two, three, four, five] = arr;
+      const { body } = document;
+
       const $table = document.createElement("table");
+      const $result = document.createElement("div");
+      const rows = [];
+      let turn = "O";
+      // html로 테이블을 적지 않아도 javascript로 선언할 수 있는 방법
       for (let i = 0; i < 3; i++) {
         const $tr = document.createElement("tr");
-        for (let i = 0; i < 3; i++) {
+        const cells = [];
+        for (let j = 0; j < 3; j++) {
           const $td = document.createElement("td");
+          cells.push($td);
           $td.addEventListener("click", (e) => {
             // 칸에 글자가 있나?
             if (event.target.textContent) return;
@@ -43,9 +46,11 @@
           });
           $tr.append($td);
         }
+        rows.push(cells);
         $table.append($tr);
       }
       document.body.append($table);
+      document.body.append($result);
     </script>
   </body>
 </html>
