@@ -89,8 +89,10 @@
         e.preventDefault();
         const input = e.target["menu-input"].value;
         if (input === "1") {
+          // 모험
           $gameMenu.style.display = "none";
           $battleMenu.style.display = "block";
+          // 깊은 복사
           monster = JSON.parse(
             JSON.stringify(
               monsterList[Math.floor(Math.random() * monsterList.length)]
@@ -100,8 +102,20 @@
           $monsterName.textContent = monster.name;
           $monsterHp.textContent = `HP: ${monster.hp}/${monster.maxHp}`;
           $monsterAtt.textContent = `ATT: ${monster.att}`;
+
+          const monster1 = JSON.parse(JSON.stringify(monsterList[0])); // 깊은 복사 -> 복사를 하게 되면 앞에나 뒤에가 바뀌어도 둘 다 안 바뀐다.
+          const monster2 = monsterList[0]; // 참조 -> 참조를 하게 되면 앞이나 뒤에가 바뀌면 둘 다 바뀐다.
+          const monster3 = { ...monster[0] }; // 얕은 복사(객체 리터럴 복사) -> 얕은 복사는 겉 껍데기만 복사되고 그 안의 내용물 중에 객체나 배열은 참조한다.
+          monster1.name = "새 몬스터";
+          console.log(monsterList[0].name); // 슬라임
+          monster2.name = "새 몬스터";
+          console.log(monsterList[0]); // 새 몬스터
+          console.log(monsterList[0] === monster1); // false, 깊은 복사
+          console.log(monsterList[0] === monster2); // ture, 참조 관계
         } else if (input === "2") {
+          // 휴식
         } else if (input === "3") {
+          // 종료
         }
       });
       $battleMenu.addEventListener("submit", (e) => {
