@@ -53,6 +53,8 @@
       const colors = ["red", "orange", "yellow", "green", "white", "pink"];
       let colorCopy = colors.concat(colors);
       let shuffled = [];
+      let clicked = [];
+      let completed = [];
 
       function shuffle() {
         //피셔-예이츠 셔플
@@ -79,10 +81,39 @@
         return card;
       }
 
+      function onClickCard() {
+        this.classList.toggle("flipped");
+        clicked.push(this);
+        if (clicked.length !== 2) {
+          return;
+        }
+        const firstBackColor =
+          clicked[0].quertSelector(".card-back").style.backgroundColor;
+        const secondBackColor =
+          clicked[1].quertSelector(".card-back").style.backgroundColor;
+        if (firstBackColor === secondBackColor) {
+          // 두 카드가 같은 카드면
+          completed.push(clicked[0]);
+          completed.push(clicked[1]);
+          clicked = [];
+          if (completed.length !== total) {
+            return;
+          }
+          alert(`축하합니다!!`);
+          return;
+        }
+        setTimeout(() => {
+          clicked[0].classList.remove("flipped");
+          clicked[1].classList.remove("flipped");
+          clicked = [];
+        });
+      }
+
       function startGame() {
         shuffle();
         for (let i = 0; i < total; i += 1) {
           const card = createCard(i);
+          card.addEventListener("click", onClickCard);
           $wrapper.appendChild(card);
         }
 
