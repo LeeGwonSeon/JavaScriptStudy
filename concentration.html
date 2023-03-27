@@ -55,6 +55,7 @@
       let shuffled = [];
       let clicked = [];
       let completed = [];
+      let clickable = false;
 
       function shuffle() {
         //피셔-예이츠 셔플
@@ -82,8 +83,12 @@
       }
 
       function onClickCard() {
+        if (!clickable || completed.includes(this) || clicked[0] === this) {
+          return;
+        }
         this.classList.toggle("flipped");
-        clicked.push(this);
+        console.log(this);
+        clicked.push(this[0]);
         if (clicked.length !== 2) {
           return;
         }
@@ -99,7 +104,10 @@
           if (completed.length !== total) {
             return;
           }
-          alert(`축하합니다!!`);
+          setTimeout(() => {
+            alert(`축하합니다!!`);
+            resetGame();
+          }, 1000);
           return;
         }
         setTimeout(() => {
@@ -110,6 +118,7 @@
       }
 
       function startGame() {
+        clickable = false;
         shuffle();
         for (let i = 0; i < total; i += 1) {
           const card = createCard(i);
@@ -129,9 +138,18 @@
           document.querySelectorAll(".card").forEach((card) => {
             card.classList.remove("flipped");
           });
+          clickable = true;
         }, 5000);
       }
       startGame();
+
+      function resetGame() {
+        $wrapper.innerHTML = "";
+        colorCopy = colors.concat(colors);
+        shuffled = [];
+        completed = [];
+        startGame();
+      }
     </script>
   </body>
 </html>
