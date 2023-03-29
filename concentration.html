@@ -98,9 +98,11 @@
           clicked[1].quertSelector(".card-back").style.backgroundColor;
         if (firstBackColor === secondBackColor) {
           // 두 카드가 같은 카드면
+          clickable = false;
           completed.push(clicked[0]);
           completed.push(clicked[1]);
           clicked = [];
+          clickable = true;
           if (completed.length !== total) {
             return;
           }
