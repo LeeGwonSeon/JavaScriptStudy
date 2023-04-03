@@ -28,18 +28,26 @@
     </style>
   </head>
   <body>
+    <form id="form">
+      <input placeholder="가로 줄" id="row" size="5" />
+      <input placeholder="세로 줄" id="cell" size="5" />
+      <input placeholder="지뢰" id="mine" size="5" />
+      <button>생성</button>
+    </form>
+
     <div id="timer">0초</div>
     <table id="table">
       <tbody></tbody>
     </table>
     <div id="result"></div>
     <script>
+      const $form = document.querySelector("form");
       const $timer = document.querySelector("#timer");
       const $tbody = document.querySelector("#table tbody");
       const $result = document.querySelector("#result");
-      const row = 10; // 줄
-      const cell = 10; // 칸
-      const mine = 10;
+      let row; // 줄
+      let cell; // 칸
+      let mine;
       const CODE = {
         NORMAL: -1, // 닫힌 칸(지뢰 없음)
         QUESTION: -2,
@@ -50,12 +58,26 @@
         OPENED: 0, // 0이상이면 다모두 열린 칸
       };
       let data;
-      let openCount = 0;
-      let startTime = new Date();
-      const interfval = setInterval(() => {
-        const time = Math.floor((new Date() - startTime) / 1000);
-        $timer.textContent = `${time}초`;
-      }, 1000);
+      let openCount;
+      let startTime;
+      let interfval;
+
+      function onSubmit(e) {
+        e.preventDefault();
+        row = parseInt(e.target.row.value);
+        cell = parseInt(e.target.cell.value);
+        mine = parseInt(e.target.mine.value);
+        openCount = 0;
+        clearInterval(interfval);
+        $tbody.innerHTML = "";
+        drawTable();
+        startTime = new Date();
+        interval = setInterval(() => {
+          const time = Math.floor((new Date() - startTime) / 1000);
+          $timer.textContent = `${time}초`;
+        }, 1000);
+      }
+      $form.addEventListener("submit", onSubmit);
 
       function plantMine() {
         const candidate = Array(row * cell)
@@ -107,7 +129,7 @@
           // 깃발 지뢰면
           data[rowIndex][cellIndex] = CODE.MINE; // 지뢰로
           target.className = "";
-          target.textContent = "X";
+          // target.textContent = "X";
         } else if (cellData === CODE.NORMAL) {
           // 단힌 칸이면
           data[rowIndex][cellIndex] = CODE.QUESTION; // 물음표로
@@ -154,9 +176,9 @@
         console.log(openCount);
         if (openCount === row * cell - mine) {
           const time = (new Date() - startTime) / 1000;
-          clearInterval(interfval);
           $tbody.removeEventListener("contextmenu", onRightClick);
           $tbody.removeEventListener("click", onLeftClick);
+          clearInterval(interfval);
           setTimeout(() => {
             alert(`승리했습니다! ${time}초가 걸렸습니다.`);
           }, 500);
@@ -205,7 +227,7 @@
           row.forEach((cell) => {
             const $td = document.createElement("td");
             if (cell === CODE.MINE) {
-              $td.textContent = "X"; // 개발 편의를 위해
+              // $td.textContent = "X"; // 개발 편의를 위해
             }
             $tr.append($td);
           });
@@ -214,7 +236,6 @@
           $tbody.addEventListener("click", onLeftClick);
         });
       }
-      drawTable();
     </script>
   </body>
 </html>
