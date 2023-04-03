@@ -28,11 +28,13 @@
     </style>
   </head>
   <body>
+    <div id="timer">0초</div>
     <table id="table">
       <tbody></tbody>
     </table>
     <div id="result"></div>
     <script>
+      const $timer = document.querySelector("#timer");
       const $tbody = document.querySelector("#table tbody");
       const $result = document.querySelector("#result");
       const row = 10; // 줄
@@ -48,6 +50,12 @@
         OPENED: 0, // 0이상이면 다모두 열린 칸
       };
       let data;
+      let openCount = 0;
+      let startTime = new Date();
+      const interfval = setInterval(() => {
+        const time = Math.floor((new Date() - startTime) / 1000);
+        $timer.textContent = `${time}초`;
+      }, 1000);
 
       function plantMine() {
         const candidate = Array(row * cell)
@@ -133,6 +141,7 @@
       }
 
       function open(rowIndex, cellIndex) {
+        if (data[rowIndex]?.[cellIndex] >= CODE.OPENED) return;
         const target = $tbody.children[rowIndex]?.children[cellIndex];
         if (!target) {
           return;
@@ -141,6 +150,17 @@
         target.textContent = count || "";
         target.className = "opened";
         data[rowIndex][cellIndex] = count;
+        openCount++;
+        console.log(openCount);
+        if (openCount === row * cell - mine) {
+          const time = (new Date() - startTime) / 1000;
+          clearInterval(interfval);
+          $tbody.removeEventListener("contextmenu", onRightClick);
+          $tbody.removeEventListener("click", onLeftClick);
+          setTimeout(() => {
+            alert(`승리했습니다! ${time}초가 걸렸습니다.`);
+          }, 500);
+        }
         return count;
       }
 
@@ -172,6 +192,7 @@
           // 지뢰 칸이면 펑!!
           target.textContent = "펑";
           target.className = "opened";
+          clearInterval(interfval);
           $tbody.removeEventListener("contextmenu", onRightClick);
           $tbody.removeEventListener("click", onLeftClick);
         } // 나머지는 무시
