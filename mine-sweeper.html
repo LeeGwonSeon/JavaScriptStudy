@@ -132,6 +132,34 @@
         return i;
       }
 
+      function open(rowIndex, cellIndex) {
+        const target = $tbody.children[rowIndex]?.children[cellIndex];
+        if (!target) {
+          return;
+        }
+        const count = countMine(rowIndex, cellIndex);
+        target.textContent = count || "";
+        target.className = "opened";
+        data[rowIndex][cellIndex] = count;
+        return count;
+      }
+
+      function openAround(rI, cI) {
+        setTimeout(() => {
+          const count = open(rI, cI);
+          if (count === 0) {
+            openAround(rI - 1, cI - 1);
+            openAround(rI - 1, cI);
+            openAround(rI - 1, cI + 1);
+            openAround(rI, cI - 1);
+            openAround(rI, cI + 1);
+            openAround(rI + 1, cI - 1);
+            openAround(rI + 1, cI);
+            openAround(rI + 1, cI + 1);
+          }
+        }, 0);
+      }
+
       function onLeftClick(e) {
         const target = e.target; // td 태그겠죠?
         const rowIndex = target.parentNode.rowIndex;
@@ -139,10 +167,7 @@
         const cellData = data[rowIndex][cellIndex];
         if (cellData === CODE.NORMAL) {
           // 닫힌 칸이면
-          const count = countMine(rowIndex, cellIndex);
-          target.textContent = count || "";
-          target.className = "opened";
-          data[rowIndex][cellIndex] = count;
+          openAround(rowIndex, cellIndex);
         } else if (cellData === CODE.MINE) {
           // 지뢰 칸이면 펑!!
           target.textContent = "펑";
